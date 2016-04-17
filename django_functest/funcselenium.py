@@ -35,9 +35,7 @@ class FuncSeleniumMixin(CommonMixin):
         if not cls.display_browser_window():
             cls.__display = Display(visible=False)
             cls.__display.start()
-        driver_name = cls.get_driver_name()
-        kwargs = {}
-        cls._driver = getattr(webdriver, driver_name)(**kwargs)
+        cls._driver = self.get_driver_instance()
         cls._driver.set_page_load_timeout(cls.get_page_load_timeout())
         super(FuncSeleniumMixin, cls).setUpClass()
 
@@ -161,6 +159,16 @@ class FuncSeleniumMixin(CommonMixin):
     @classmethod
     def get_driver_name(cls):
         return cls.driver_name
+
+    @classmethod
+    def get_driver_kwargs(cls):
+        return cls.driver_kwargs
+
+    @classmethod
+    def get_driver_instance(cls):
+        driver_name = cls.get_driver_name()
+        driver_kwargs = cls.get_driver_kwargs()
+        return getattr(webdriver, driver_name)(**driver_kwargs)
 
     @classmethod
     def get_page_load_timeout(cls):
